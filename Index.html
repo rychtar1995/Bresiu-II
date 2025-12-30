@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Quiz szkoleniowy – Ratownictwo chemiczno-ekologiczne</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: linear-gradient(135deg,#0f172a,#020617);
+  color:#e5e7eb;
+}
+.container{
+  max-width:900px;
+  margin:40px auto;
+  background:rgba(15,23,42,0.95);
+  border-radius:16px;
+  padding:30px;
+  box-shadow:0 0 40px rgba(0,0,0,0.7);
+}
+h1{text-align:center}
+.sub{text-align:center;color:#94a3b8;margin-bottom:30px}
+
+button{
+  width:100%;
+  padding:14px;
+  margin:8px 0;
+  font-size:16px;
+  border-radius:10px;
+  border:2px solid #334155;
+  background:#020617;
+  color:#e5e7eb;
+  cursor:pointer;
+}
+button:hover{border-color:#f97316}
+.correct{background:#14532d;border-color:#22c55e}
+.wrong{background:#7f1d1d;border-color:#ef4444}
+
+#start,#end{text-align:center}
+#quiz{display:none}
+
+.progress{
+  text-align:right;
+  color:#94a3b8;
+  font-size:14px;
+}
+.explain{
+  margin-top:10px;
+  padding:10px;
+  background:#020617;
+  border-left:4px solid #38bdf8;
+  color:#a5f3fc;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>Quiz szkoleniowy – Ratownictwo chemiczno-ekologiczne</h1>
+<div class="sub">100 pytań • ABCD • wersja szkoleniowa</div>
+
+<div id="start">
+  <button onclick="startQuiz()">START</button>
+</div>
+
+<div id="quiz">
+  <div class="progress" id="progress"></div>
+  <h2 id="question"></h2>
+  <div id="answers"></div>
+  <div class="explain" id="explain"></div>
+  <button onclick="nextQuestion()">Dalej</button>
+</div>
+
+<div id="end" style="display:none">
+  <h2>Koniec testu</h2>
+  <p id="score"></p>
+  <button onclick="location.reload()">Restart</button>
+</div>
+
+</div>
+
+<script>
+const questions = [
+
+/* ===================== PYTANIA 1–50 ===================== */
+
+{
+q:"Czym jest ratownictwo chemiczno-ekologiczne?",
+a:[
+"Zespołem działań mających na celu neutralizację zagrożeń chemicznych i ekologicznych",
+"Gaszeniem pożarów substancji chemicznych",
+"Ewakuacją ludzi z terenów przemysłowych",
+"Likwidacją skażeń biologicznych"
+],
+c:0,
+e:"Ratownictwo chemiczno-ekologiczne obejmuje rozpoznanie, zabezpieczenie i neutralizację zagrożeń chemicznych oraz ekologicznych."
+},
+
+{
+q:"Strefa I podczas zdarzenia chemicznego to:",
+a:[
+"Strefa bezpośredniego zagrożenia",
+"Strefa zagrożenia pośredniego",
+"Strefa bezpieczna",
+"Strefa zaplecza logistycznego"
+],
+c:0,
+e:"Strefa I to obszar bezpośredniego zagrożenia życia i zdrowia ratowników oraz osób postronnych."
+},
+
+{
+q:"Strefa II to:",
+a:[
+"Strefa bezpośredniego skażenia",
+"Strefa pośredniego zagrożenia",
+"Strefa dekontaminacji wstępnej",
+"Strefa bezpieczna"
+],
+c:1,
+e:"Strefa II to obszar pośredniego zagrożenia, w którym mogą występować szkodliwe stężenia."
+},
+
+{
+q:"Strefa III oznacza:",
+a:[
+"Strefę zagrożenia",
+"Strefę działań ratowniczych",
+"Strefę bezpieczną",
+"Strefę skażenia wtórnego"
+],
+c:2,
+e:"Strefa III to strefa bezpieczna, wolna od zagrożeń chemicznych."
+},
+
+{
+q:"NDS oznacza:",
+a:[
+"Najwyższe dopuszczalne stężenie",
+"Najniższe dopuszczalne stężenie",
+"Normę dekontaminacji substancji",
+"Natychmiastowe działanie substancji"
+],
+c:0,
+e:"NDS to najwyższe dopuszczalne stężenie substancji w środowisku pracy."
+},
+
+{
+q:"NDSCh to:",
+a:[
+"Stężenie chwilowe, którego nie wolno przekroczyć",
+"Średnie stężenie dobowe",
+"Stężenie śmiertelne",
+"Stężenie zapalne"
+],
+c:0,
+e:"NDSCh – najwyższe dopuszczalne stężenie chwilowe."
+},
+
+{
+q:"NDSP oznacza:",
+a:[
+"Najwyższe dopuszczalne stężenie pułapowe",
+"Najniższe dopuszczalne stężenie pracy",
+"Normę dekontaminacji sprzętu",
+"Stężenie graniczne wybuchowości"
+],
+c:0,
+e:"NDSP to stężenie, którego nie wolno przekroczyć w żadnym momencie."
+},
+
+{
+q:"BLEVE to:",
+a:[
+"Wybuch par cieczy palnej",
+"Gwałtowny rozpad zbiornika z cieczą pod ciśnieniem",
+"Zapłon chmury gazowej",
+"Pożar strumieniowy"
+],
+c:1,
+e:"BLEVE – Boiling Liquid Expanding Vapor Explosion."
+},
+
+{
+q:"UVCE oznacza:",
+a:[
+"Wybuch par cieczy palnej w otwartej przestrzeni",
+"Wybuch pyłu",
+"Wybuch zbiornika ciśnieniowego",
+"Pożar powierzchniowy"
+],
+c:0,
+e:"UVCE – wybuch niezwiązanej chmury par cieczy palnej."
+},
+
+{
+q:"Dekontaminacja to:",
+a:[
+"Usuwanie lub neutralizacja substancji niebezpiecznych",
+"Ewakuacja ludzi",
+"Gaszenie pożaru",
+"Rozpoznanie chemiczne"
+],
+c:0,
+e:"Dekontaminacja polega na usunięciu lub neutralizacji substancji niebezpiecznych."
+},
+
+{
+q:"Dekontaminacja wstępna wykonywana jest:",
+a:[
+"W strefie I",
+"W strefie II",
+"W strefie III",
+"Po zakończeniu działań"
+],
+c:1,
+e:"Dekontaminację wstępną prowadzi się w strefie II."
+},
+
+{
+q:"Podstawowym celem rozpoznania chemicznego jest:",
+a:[
+"Identyfikacja substancji i ocena zagrożenia",
+"Ewakuacja ludzi",
+"Gaszenie pożaru",
+"Zabezpieczenie mienia"
+],
+c:0,
+e:"Rozpoznanie chemiczne służy identyfikacji substancji i ocenie zagrożeń."
+},
+
+{
+q:"SOR (Sprzęt Ochrony dróg Oddechowych) chroni:",
+a:[
+"Układ oddech ratownika",
+"Skórę ratownika",
+"Oczy ratownika",
+"Całe ciało ratownika"
+],
+c:0,
+e:"SOR zabezpiecza drogi oddechowe przed skażeniem."
+},
+
+{
+q:"Ubranie gazoszczelne stosuje się:",
+a:[
+"W strefie I przy nieznanej substancji",
+"W strefie III",
+"Tylko przy pożarach",
+"Tylko przy wyciekach paliw"
+],
+c:0,
+e:"Ubranie gazoszczelne stosuje się przy najwyższym poziomie zagrożenia."
+},
+
+{
+q:"Pierwszą czynnością KDR po przybyciu na miejsce zdarzenia chemicznego jest:",
+a:[
+"Rozpoznanie",
+"Gaszenie pożaru",
+"Ewakuacja",
+"Dekontaminacja"
+],
+c:0,
+e:"Rozpoznanie jest kluczowe dla dalszych decyzji taktycznych."
+},
+
+{
+q:"Do podstawowych zagrożeń chemicznych zaliczamy:",
+a:[
+"Toksyczność, palność, wybuchowość",
+"Tylko toksyczność",
+"Tylko promieniowanie",
+"Zagrożenia biologiczne"
+],
+c:0,
+e:"Substancje chemiczne mogą być toksyczne, palne lub wybuchowe."
+},
+
+{
+q:"Chmura gazowa przemieszcza się zgodnie z:",
+a:[
+"Kierunkiem wiatru",
+"Kierunkiem słońca",
+"Ukształtowaniem dróg",
+"Kierunkiem rzek"
+],
+c:0,
+e:"Chmura gazowa przemieszcza się zgodnie z kierunkiem i prędkością wiatru."
+},
+
+{
+q:"Największe zagrożenie dla ratownika stanowi:",
+a:[
+"Nieznana substancja",
+"Znana substancja",
+"Małe stężenie",
+"Brak wiatru"
+],
+c:0,
+e:"Nieznana substancja zawsze wymaga najwyższych środków ochrony."
+},
+
+{
+q:"Ewakuację ludzi prowadzi się:",
+a:[
+"Zawsze pod wiatr",
+"Zawsze z wiatrem",
+"Bez względu na wiatr",
+"Tylko nocą"
+],
+c:0,
+e:"Ewakuację prowadzi się pod wiatr, aby uniknąć kontaktu z chmurą."
+},
+
+{
+q:"Podstawowym zadaniem strefy III jest:",
+a:[
+"Zapewnienie bezpieczeństwa",
+"Prowadzenie dekontaminacji",
+"Rozpoznanie chemiczne",
+"Likwidacja wycieku"
+],
+c:0,
+e:"Strefa III to zaplecze bezpieczne działań."
+},
+
+{
+q:"Do zadań KDR należy:",
+a:[
+"Wyznaczanie stref zagrożenia",
+"Wyłącznie gaszenie",
+"Tylko ewakuacja",
+"Tylko rozpoznanie"
+],
+c:0,
+e:"KDR odpowiada m.in. za wyznaczenie stref i organizację działań."
+},
+
+{
+q:"Czas przebywania ratownika w strefie I zależy od:",
+a:[
+"Rodzaju ochrony i substancji",
+"Liczby ratowników",
+"Pory dnia",
+"Warunków drogowych"
+],
+c:0,
+e:"Czas pracy zależy od ochrony, substancji i warunków."
+},
+
+{
+q:"Zagrożenie ekologiczne dotyczy:",
+a:[
+"Środowiska naturalnego",
+"Tylko ludzi",
+"Tylko budynków",
+"Tylko infrastruktury"
+],
+c:0,
+e:"Zagrożenia ekologiczne wpływają na środowisko."
+},
+
+{
+q:"Skażenie wtórne to:",
+a:[
+"Przeniesienie substancji poza miejsce zdarzenia",
+"Pierwotny wyciek",
+"Pożar substancji",
+"Wybuch zbiornika"
+],
+c:0,
+e:"Skażenie wtórne powstaje przez przeniesienie substancji."
+},
+
+{
+q:"Podstawowym środkiem neutralizacji jest:",
+a:[
+"Rozcieńczenie lub sorpcja",
+"Gaszenie wodą",
+"Ewakuacja",
+"Wentylacja"
+],
+c:0,
+e:"Neutralizacja polega m.in. na rozcieńczaniu lub sorpcji."
+},
+
+{
+q:"Sorpcja polega na:",
+a:[
+"Wiązaniu substancji przez sorbent",
+"Spalaniu substancji",
+"Rozpuszczaniu w wodzie",
+"Parowaniu"
+],
+c:0,
+e:"Sorbenty wiążą substancje niebezpieczne."
+},
+
+{
+q:"Dekontaminacja ratowników obejmuje:",
+a:[
+"Ludzi, sprzęt i odzież",
+"Tylko ludzi",
+"Tylko sprzęt",
+"Tylko teren"
+],
+c:0,
+e:"Dekontaminacja dotyczy ratowników, sprzętu i odzieży."
+},
+
+{
+q:"Najczęściej stosowanym sorbentem jest:",
+a:[
+"Sorbent mineralny",
+"Woda",
+"Piana",
+"Proszek gaśniczy"
+],
+c:0,
+e:"Sorbenty mineralne są powszechnie stosowane."
+},
+
+{
+q:"Zadaniem strefy II jest m.in.:",
+a:[
+"Dekontaminacja wstępna",
+"Zaplecze logistyczne",
+"Ewakuacja ludności",
+"Rozpoznanie chemiczne"
+],
+c:0,
+e:"W strefie II prowadzi się dekontaminację wstępną."
+},
+
+{
+q:"Przy wycieku gazu najważniejsze jest:",
+a:[
+"Uszczelnienie źródła",
+"Gaszenie wodą",
+"Ewakuacja sprzętu",
+"Budowa zapór"
+],
+c:0,
+e:"Priorytetem jest zatrzymanie emisji."
+},
+
+{
+q:"Zagrożenie wybuchem występuje gdy:",
+a:[
+"Stężenie mieści się w granicach wybuchowości",
+"Substancja jest toksyczna",
+"Brak tlenu",
+"Brak źródła zapłonu"
+],
+c:0,
+e:"Wybuch możliwy jest przy odpowiednim stężeniu i źródle zapłonu."
+},
+
+{
+q:"Granice wybuchowości to:",
+a:[
+"Zakres stężeń zdolnych do zapłonu",
+"Temperatura zapłonu",
+"Czas reakcji",
+"Ciśnienie krytyczne"
+],
+c:0,
+e:"Granice wybuchowości określają zakres stężeń palnych."
+},
+
+{
+q:"Najczęściej stosowanym środkiem ochrony skóry jest:",
+a:[
+"Ubranie ochronne",
+"Maska",
+"Hełm",
+"Rękawice"
+],
+c:0,
+e:"Ubranie ochronne zabezpiecza skórę."
+},
+
+{
+q:"Przy rozpoznaniu chemicznym NIE wykorzystuje się:",
+a:[
+"Detektorów",
+"Papierków wskaźnikowych",
+"Termowizji",
+"Przyrządów pomiarowych"
+],
+c:2,
+e:"Termowizja nie służy do identyfikacji chemicznej."
+},
+
+{
+q:"Zagrożenie toksyczne oznacza:",
+a:[
+"Możliwość zatrucia organizmu",
+"Ryzyko wybuchu",
+"Ryzyko pożaru",
+"Ryzyko skażenia biologicznego"
+],
+c:0,
+e:"Toksyczność oznacza możliwość zatrucia."
+},
+
+{
+q:"Pierwszym środkiem ochrony ratownika jest:",
+a:[
+"Wiedza i rozpoznanie",
+"Sprzęt",
+"Odzież",
+"Detektor"
+],
+c:0,
+e:"Wiedza i rozpoznanie są kluczowe."
+},
+
+{
+q:"Przy dużym wycieku substancji ciekłej należy:",
+a:[
+"Ograniczyć rozlew",
+"Natychmiast gasić",
+"Zalać wodą",
+"Zignorować"
+],
+c:0,
+e:"Ograniczenie rozlewu zmniejsza zagrożenie."
+},
+
+{
+q:"Zadaniem dekontaminacji końcowej jest:",
+a:[
+"Całkowite usunięcie skażeń",
+"Tylko spłukanie wodą",
+"Usunięcie sprzętu",
+"Zakończenie akcji"
+],
+c:0,
+e:"Dekontaminacja końcowa usuwa pozostałe skażenia."
+},
+
+{
+q:"Zagrożenie ekologiczne może dotyczyć:",
+a:[
+"Wód, gleby i powietrza",
+"Tylko powietrza",
+"Tylko gleby",
+"Tylko wód"
+],
+c:0,
+e:"Skażenia wpływają na wszystkie elementy środowiska."
+},
+
+{
+q:"Najczęstszą przyczyną skażeń środowiska jest:",
+a:[
+"Awaria instalacji",
+"Pożar lasu",
+"Burza",
+"Powódź"
+],
+c:0,
+e:"Awaria instalacji przemysłowych jest częstą przyczyną."
+},
+
+{
+q:"Podczas działań chemicznych obowiązuje zasada:",
+a:[
+"Minimum ludzi – maksimum bezpieczeństwa",
+"Jak najwięcej ratowników",
+"Szybkość ponad bezpieczeństwo",
+"Brak stref"
+],
+c:0,
+e:"Bezpieczeństwo ratowników jest nadrzędne."
+},
+
+{
+q:"Zagrożenie pożarowe substancji oznacza:",
+a:[
+"Możliwość zapłonu",
+"Możliwość zatrucia",
+"Możliwość wybuchu",
+"Możliwość skażenia"
+],
+c:0,
+e:"Pożarowe – możliwość zapłonu."
+},
+
+{
+q:"Najważniejszym dokumentem podczas działań jest:",
+a:[
+"Plan działań ratowniczych",
+"Karta ewakuacji",
+"Raport końcowy",
+"Protokół dekontaminacji"
+],
+c:0,
+e:"Plan działań ratowniczych wyznacza tok akcji."
+},
+
+{
+q:"Zagrożenie wybuchem może być skutkiem:",
+a:[
+"Nagromadzenia par palnych",
+"Rozcieńczenia substancji",
+"Dekontaminacji",
+"Ewakuacji"
+],
+c:0,
+e:"Nagromadzenie par palnych może prowadzić do wybuchu."
+},
+
+{
+q:"Ochrona środowiska polega na:",
+a:[
+"Ograniczeniu rozprzestrzeniania skażeń",
+"Tylko ewakuacji ludzi",
+"Tylko gaszeniu",
+"Tylko dekontaminacji ludzi"
+],
+c:0,
+e:"Ochrona środowiska to ograniczenie skażeń."
+},
+
+{
+q:"Podstawowym celem działań chemicznych jest:",
+a:[
+"Ochrona życia i zdrowia",
+"Ochrona mienia",
+"Ochrona środowiska",
+"Wszystkie odpowiedzi są prawidłowe"
+],
+c:3,
+e:"Celem nadrzędnym jest ochrona życia, zdrowia, mienia i środowiska."
+}
+
+/* ===== KONIEC PYTAŃ 50 ===== */
+
+];
+/* ===================== PYTANIA 51–100 ===================== */
+
+,
+{
+q:"Rozpoznanie wstępne prowadzi się w celu:",
+a:[
+"Szybkiej oceny zagrożenia",
+"Dekontaminacji ratowników",
+"Ewakuacji sprzętu",
+"Gaszenia pożaru"
+],
+c:0,
+e:"Rozpoznanie wstępne pozwala szybko ocenić sytuację i zagrożenie."
+},
+
+{
+q:"Rozpoznanie szczegółowe wykonywane jest:",
+a:[
+"Po zabezpieczeniu miejsca zdarzenia",
+"Zawsze jako pierwsze",
+"Po zakończeniu działań",
+"Tylko w strefie III"
+],
+c:0,
+e:"Rozpoznanie szczegółowe wykonuje się po zabezpieczeniu miejsca."
+},
+
+{
+q:"Detektory chemiczne służą do:",
+a:[
+"Wykrywania i identyfikacji substancji",
+"Gaszenia pożarów",
+"Dekontaminacji",
+"Ochrony dróg oddechowych"
+],
+c:0,
+e:"Detektory umożliwiają wykrycie i identyfikację substancji."
+},
+
+{
+q:"Papierki wskaźnikowe pozwalają określić:",
+a:[
+"Rodzaj zagrożenia chemicznego",
+"Temperaturę zapłonu",
+"Ciśnienie par",
+"Stężenie tlenu"
+],
+c:0,
+e:"Papierki wskaźnikowe reagują na określone grupy substancji."
+},
+
+{
+q:"Strefy zagrożenia wyznacza się na podstawie:",
+a:[
+"Rozpoznania i prognozy rozwoju zdarzenia",
+"Wyłącznie map topograficznych",
+"Zaleceń świadków",
+"Decyzji administracyjnej"
+],
+c:0,
+e:"Strefy wyznacza się na podstawie rozpoznania i prognoz."
+},
+
+{
+q:"Przy wycieku substancji toksycznej należy w pierwszej kolejności:",
+a:[
+"Zabezpieczyć ratowników",
+"Uszczelnić źródło",
+"Ewakuować sprzęt",
+"Rozpocząć dekontaminację końcową"
+],
+c:0,
+e:"Bezpieczeństwo ratowników jest zawsze priorytetem."
+},
+
+{
+q:"Zagrożenie chemiczne może mieć charakter:",
+a:[
+"Ostry lub przewlekły",
+"Tylko ostry",
+"Tylko przewlekły",
+"Wyłącznie chwilowy"
+],
+c:0,
+e:"Zagrożenia mogą działać natychmiast lub długofalowo."
+},
+
+{
+q:"Zadaniem strefy dekontaminacji jest:",
+a:[
+"Ograniczenie przenoszenia skażeń",
+"Gaszenie pożaru",
+"Rozpoznanie chemiczne",
+"Ewakuacja ludności"
+],
+c:0,
+e:"Dekontaminacja zapobiega skażeniom wtórnym."
+},
+
+{
+q:"Podczas dekontaminacji wstępnej stosuje się:",
+a:[
+"Proste środki i wodę",
+"Specjalistyczne laboratoria",
+"Wyłącznie środki chemiczne",
+"Tylko neutralizatory"
+],
+c:0,
+e:"Dekontaminacja wstępna ma charakter uproszczony."
+},
+
+{
+q:"Dekontaminacja końcowa prowadzona jest:",
+a:[
+"Po zakończeniu działań ratowniczych",
+"W trakcie rozpoznania",
+"Na początku akcji",
+"Wyłącznie w strefie I"
+],
+c:0,
+e:"Dekontaminacja końcowa następuje po zakończeniu działań."
+},
+
+{
+q:"Środki ochrony indywidualnej dobiera się na podstawie:",
+a:[
+"Rodzaju zagrożenia",
+"Liczby ratowników",
+"Pory dnia",
+"Rodzaju pojazdu"
+],
+c:0,
+e:"Dobór ŚOI zależy od rodzaju substancji i zagrożenia."
+},
+
+{
+q:"Ubranie gazoszczelne chroni:",
+a:[
+"Skórę i drogi oddech",
+"Tylko drogi oddech",
+"Tylko skórę",
+"Tylko oczy"
+],
+c:0,
+e:"Ubranie gazoszczelne zapewnia pełną ochronę."
+},
+
+{
+q:"Zagrożenie wybuchem może wystąpić przy:",
+a:[
+"Obecności źródła zapłonu",
+"Braku tlenu",
+"Niskiej temperaturze",
+"Rozcieńczeniu substancji"
+],
+c:0,
+e:"Źródło zapłonu w obecności par palnych stwarza ryzyko wybuchu."
+},
+
+{
+q:"Toksyczność substancji zależy od:",
+a:[
+"Dawki i czasu ekspozycji",
+"Koloru substancji",
+"Temperatury otoczenia",
+"Ciśnienia atmosferycznego"
+],
+c:0,
+e:"Im większa dawka i czas ekspozycji, tym większe zagrożenie."
+},
+
+{
+q:"Do neutralizacji kwasów stosuje się:",
+a:[
+"Zasady",
+"Wodę",
+"Sorbenty",
+"Pianę"
+],
+c:0,
+e:"Zasady neutralizują kwasy."
+},
+
+{
+q:"Do neutralizacji zasad stosuje się:",
+a:[
+"Kwasy",
+"Wodę",
+"Sorbenty",
+"Pianę"
+],
+c:0,
+e:"Kwasy neutralizują zasady."
+},
+
+{
+q:"Zagrożenie ekologiczne może skutkować:",
+a:[
+"Długotrwałymi skutkami środowiskowymi",
+"Wyłącznie stratami materialnymi",
+"Tylko ewakuacją ludzi",
+"Brakiem konsekwencji"
+],
+c:0,
+e:"Skażenia środowiska mogą mieć długotrwałe skutki."
+},
+
+{
+q:"Podczas działań chemicznych zabrania się:",
+a:[
+"Spożywania posiłków w strefach zagrożenia",
+"Prowadzenia rozpoznania",
+"Używania detektorów",
+"Wyznaczania stref"
+],
+c:0,
+e:"W strefach zagrożenia nie wolno jeść ani pić."
+},
+
+{
+q:"Zagrożenie pożarowe oznacza:",
+a:[
+"Możliwość zapalenia się substancji",
+"Możliwość zatrucia",
+"Możliwość skażenia biologicznego",
+"Możliwość promieniowania"
+],
+c:0,
+e:"Pożarowe – możliwość zapłonu."
+},
+
+{
+q:"Podstawowym zadaniem dowodzącego jest:",
+a:[
+"Zapewnienie bezpieczeństwa",
+"Gaszenie pożaru",
+"Ewakuacja sprzętu",
+"Sporządzanie dokumentacji"
+],
+c:0,
+e:"Bezpieczeństwo ludzi i ratowników jest nadrzędne."
+},
+
+{
+q:"Skażenie środowiska wodnego może prowadzić do:",
+a:[
+"Zniszczenia ekosystemów",
+"Tylko zmiany koloru wody",
+"Braku skutków",
+"Natychmiastowego odparowania"
+],
+c:0,
+e:"Skażenie wód niszczy ekosystemy."
+},
+
+{
+q:"Zabezpieczenie miejsca zdarzenia polega na:",
+a:[
+"Ograniczeniu dostępu osób postronnych",
+"Gaszeniu pożaru",
+"Dekontaminacji końcowej",
+"Rozpoznaniu szczegółowym"
+],
+c:0,
+e:"Zabezpieczenie zapobiega narażeniu osób postronnych."
+},
+
+{
+q:"Skażenie gleby może skutkować:",
+a:[
+"Długotrwałym zanieczyszczeniem",
+"Natychmiastowym zanikiem zagrożenia",
+"Brakiem wpływu na środowisko",
+"Wyłącznie stratami finansowymi"
+],
+c:0,
+e:"Zanieczyszczona gleba długo pozostaje skażona."
+},
+
+{
+q:"Najważniejszą zasadą działań chemicznych jest:",
+a:[
+"Ochrona życia i zdrowia",
+"Szybkość działań",
+"Ochrona sprzętu",
+"Minimalizacja kosztów"
+],
+c:0,
+e:"Ochrona życia i zdrowia ma najwyższy priorytet."
+},
+
+{
+q:"Zagrożenie chemiczne może powstać w wyniku:",
+a:[
+"Awarii przemysłowej",
+"Tylko pożaru",
+"Tylko transportu",
+"Tylko działań wojennych"
+],
+c:0,
+e:"Najczęściej zagrożenia wynikają z awarii."
+},
+
+{
+q:"Podczas ewakuacji należy kierować ludzi:",
+a:[
+"Pod wiatr",
+"Z wiatrem",
+"W dowolnym kierunku",
+"W stronę źródła wycieku"
+],
+c:0,
+e:"Ewakuację prowadzi się pod wiatr."
+},
+
+{
+q:"Celem działań ratowniczych jest:",
+a:[
+"Ochrona życia, zdrowia, mienia i środowiska",
+"Tylko gaszenie pożaru",
+"Tylko ewakuacja ludzi",
+"Tylko dekontaminacja"
+],
+c:0,
+e:"Działania ratownicze mają kompleksowy cel."
+},
+
+{
+q:"Zagrożenie chemiczne może mieć zasięg:",
+a:[
+"Lokalny lub rozległy",
+"Tylko lokalny",
+"Tylko punktowy",
+"Wyłącznie wewnętrzny"
+],
+c:0,
+e:"Zasięg zależy od ilości i rodzaju substancji."
+},
+
+{
+q:"Największe ryzyko w strefie I dotyczy:",
+a:[
+"Ratowników",
+"Sprzętu",
+"Pojazdów",
+"Dokumentacji"
+],
+c:0,
+e:"Ratownicy są najbardziej narażeni."
+},
+
+{
+q:"Podstawowym dokumentem po zakończeniu działań jest:",
+a:[
+"Dokumentacja z działań ratowniczych",
+"Plan ewakuacji",
+"Karta charakterystyki",
+"Mapa zagrożeń"
+],
+c:0,
+e:"Dokumentacja podsumowuje przebieg działań."
+},
+
+{
+q:"Zagrożenie chemiczne może być wynikiem:",
+a:[
+"Nieprawidłowego magazynowania",
+"Tylko transportu kolejowego",
+"Tylko transportu drogowego",
+"Tylko pożaru"
+],
+c:0,
+e:"Magazynowanie to częsta przyczyna zagrożeń."
+},
+
+{
+q:"Podczas działań chemicznych należy unikać:",
+a:[
+"Kontaktów bezpośrednich z substancją",
+"Rozpoznania",
+"Dekontaminacji",
+"Wyznaczania stref"
+],
+c:0,
+e:"Bezpośredni kontakt zwiększa ryzyko."
+},
+
+{
+q:"Końcowym etapem działań jest:",
+a:[
+"Przywrócenie terenu do użytkowania",
+"Rozpoznanie wstępne",
+"Ewakuacja ratowników",
+"Wyznaczenie stref"
+],
+c:0,
+e:"Po zakończeniu działań teren jest przywracany do użytkowania."
+}
+
+];
+
+/* ===================== LOGIKA QUIZU ===================== */
+
+let index = 0;
+let score = 0;
+
+function startQuiz(){
+  document.getElementById("start").style.display="none";
+  document.getElementById("quiz").style.display="block";
+  showQuestion();
+}
+
+function showQuestion(){
+  if(index >= questions.length){
+    endQuiz();
+    return;
+  }
+  document.getElementById("progress").innerText =
+    "Pytanie " + (index+1) + " / " + questions.length;
+  document.getElementById("question").innerText = questions[index].q;
+  document.getElementById("explain").innerText = "";
+
+  const answers = document.getElementById("answers");
+  answers.innerHTML = "";
+
+  questions[index].a.forEach((txt,i)=>{
+    const b = document.createElement("button");
+    b.innerText = String.fromCharCode(65+i)+". "+txt;
+    b.onclick = ()=>checkAnswer(b,i);
+    answers.appendChild(b);
+  });
+}
+
+function checkAnswer(btn,i){
+  const q = questions[index];
+  const buttons = document.querySelectorAll("#answers button");
+  buttons.forEach((b,j)=>{
+    if(j===q.c) b.classList.add("correct");
+    if(j===i && j!==q.c) b.classList.add("wrong");
+    b.disabled = true;
+  });
+  if(i===q.c) score++;
+  document.getElementById("explain").innerText = q.e;
+}
+
+function nextQuestion(){
+  index++;
+  showQuestion();
+}
+
+function endQuiz(){
+  document.getElementById("quiz").style.display="none";
+  document.getElementById("end").style.display="block";
+  document.getElementById("score").innerText =
+    "Twój wynik: " + score + " / " + questions.length;
+}
+</script>
+</body>
+</html>
